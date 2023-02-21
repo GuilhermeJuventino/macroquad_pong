@@ -6,9 +6,9 @@ pub enum PadType {
 }
 
 
-// player object
+// pad object
 pub struct Pad {
-    rect: Rect,
+    pub rect: Rect,
     color: Color,
     pad_type: PadType
 }
@@ -61,5 +61,31 @@ impl Pad {
     // function that draws the pad to the screen at it's current position
     pub fn draw(&self) {
         draw_rectangle(self.rect.x, self.rect.y, self.rect.w, self.rect.h, self.color);
+    }
+}
+
+// ball object
+pub struct Ball {
+    circle: Circle,
+    color: Color,
+}
+
+impl Ball {
+    pub fn new(pos: Vec2) -> Self {
+        Ball {
+            circle: Circle {
+                x: pos.x,
+                y: pos.y,
+                r: 10.,
+            },
+            color: LIGHTGRAY,
+        }
+    }
+
+    pub fn draw(&self) {
+        draw_circle(self.circle.x, self.circle.y, self.circle.r, self.color);
+    }
+
+    pub fn update(&mut self, p_rect: &Rect, e_rect: &Rect) {
     }
 }
