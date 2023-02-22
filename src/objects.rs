@@ -1,4 +1,5 @@
 use macroquad::prelude::*;
+use ::rand::prelude::*;
 
 use crate::constants::*;
 
@@ -75,6 +76,24 @@ pub struct Ball {
 
 impl Ball {
     pub fn new(pos: Vec2) -> Self {
+        // randomizing ball's initial velocity
+        let mut rng = thread_rng();
+        let mut x = rng.gen_range(-BALL_SPEED..BALL_SPEED);
+        let mut y = rng.gen_range(-BALL_SPEED..BALL_SPEED);
+
+        // making sure the ball moves at the same speed in either direction
+        if x > 0. {
+            x = BALL_SPEED;
+        } else if x < 0. {
+            x = -BALL_SPEED;
+        }
+
+        if y > 0. {
+            y = BALL_SPEED;
+        } else if y < 0. {
+            y = -BALL_SPEED;
+        }
+
         Ball {
             circle: Circle {
                 x: pos.x,
@@ -82,7 +101,7 @@ impl Ball {
                 r: BALL_RADIUS,
             },
             color: LIGHTGRAY,
-            speed: vec2(BALL_SPEED, BALL_SPEED)
+            speed: vec2(x, y)
         }
     }
 
@@ -90,7 +109,7 @@ impl Ball {
         draw_circle(self.circle.x, self.circle.y, self.circle.r, self.color);
     }
 
-    pub fn update(&mut self, p_rect: &Rect, e_rect: &Rect) {
+    pub fn update(&mut self) {
         self.circle.x += self.speed.x;
         self.circle.y += self.speed.y;
 

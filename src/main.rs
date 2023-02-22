@@ -30,7 +30,7 @@ async fn main() {
         // updating game objects
         player.update();
         enemy.update();
-        ball.update(&player.rect, &enemy.rect);
+        ball.update();
 
         // drawing game objects
         draw_line(screen_width() / 2., 0., screen_width() / 2., screen_height(), 3., WHITE);
