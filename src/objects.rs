@@ -130,20 +130,53 @@ impl Ball {
         }
 
         for pad in self.pad_list.iter() {
-            if self.detect_collision("horizontal", pad) {
+            /*if self.detect_collision("horizontal", pad) {
                 self.speed.x *= -1.;
             }
 
             if self.detect_collision("vertical", pad) {
                 self.speed.y *= -1.;
+            }*/
+
+            if self.detect_collision("horizontal", pad) {
+                println!("True");
             }
         }
     }
 
     pub fn detect_collision(&self, aim: &str, pad: &Rect) -> bool {
-        let mut collision = false;
+        let collision: bool;
 
-            if aim == "horizontal" {
+        let mut test_x = self.circle.x;
+        let mut test_y = self.circle.y;
+
+        let dist_x: f32;
+        let dist_y: f32;
+
+        if self.circle.x < pad.x {
+            test_x = pad.x;
+        } else if self.circle.x > pad.x + pad.w {
+            test_x = pad.x + pad.w;
+        }
+
+        if self.circle.y < pad.y {
+            test_y = pad.y;
+        } else if self.circle.y > pad.y + pad.h {
+            test_y = pad.y + pad.h;
+        }
+
+        dist_x = self.circle.x - test_x;
+        dist_y = self.circle.y - test_y;
+
+        let distance = ((dist_x * dist_x) + (dist_y * dist_y)).sqrt();
+
+        if distance <= self.circle.r {
+            collision = true;
+        } else {
+            collision = false;
+        }
+
+            /*if aim == "horizontal" {
                 if self.circle.x < pad.x ||
                 self.circle.x > pad.x + pad.w {
                     collision = true;
@@ -157,7 +190,7 @@ impl Ball {
                 self.circle.y > pad.y + pad.h {
                     collision = true;
                 }
-            }
+            }*/
 
         collision
     }
