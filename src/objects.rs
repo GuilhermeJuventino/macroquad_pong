@@ -1,5 +1,5 @@
-use macroquad::prelude::*;
 use ::rand::prelude::*;
+use macroquad::prelude::*;
 
 use crate::constants::*;
 
@@ -8,12 +8,11 @@ pub enum PadType {
     Enemy,
 }
 
-
 // pad object
 pub struct Pad {
     pub rect: Rect,
     color: Color,
-    pad_type: PadType
+    pad_type: PadType,
 }
 
 impl Pad {
@@ -27,10 +26,10 @@ impl Pad {
                 x: pos.x - w,
                 y: pos.y,
                 w: w,
-                h: h
+                h: h,
             },
             color: WHITE,
-            pad_type: pad_type
+            pad_type: pad_type,
         }
     }
 
@@ -55,15 +54,20 @@ impl Pad {
                 } else if self.rect.y > screen_height() - self.rect.h {
                     self.rect.y = screen_height() - self.rect.h;
                 }
-                
-            },
+            }
             PadType::Enemy => {}
         }
     }
 
     // function that draws the pad to the screen at it's current position
     pub fn draw(&self) {
-        draw_rectangle(self.rect.x, self.rect.y, self.rect.w, self.rect.h, self.color);
+        draw_rectangle(
+            self.rect.x,
+            self.rect.y,
+            self.rect.w,
+            self.rect.h,
+            self.color,
+        );
     }
 }
 
@@ -101,7 +105,7 @@ impl Ball {
                 r: BALL_RADIUS,
             },
             color: LIGHTGRAY,
-            speed: vec2(x, y)
+            speed: vec2(x, y),
         }
     }
 
@@ -115,10 +119,10 @@ impl Ball {
 
         if self.circle.x < 0. || self.circle.x > screen_width() {
             self.speed.x *= -1.;
-        } 
+        }
 
         if self.circle.y < 0. || self.circle.y > screen_height() {
             self.speed.y *= -1.;
-        }     
+        }
     }
 }

@@ -1,10 +1,10 @@
 use macroquad::prelude::*;
 
-use objects::{Pad, PadType, Ball};
 use constants::*;
+use objects::{Ball, Pad, PadType};
 
-mod objects;
 mod constants;
+mod objects;
 
 // game configuration
 fn window_config() -> Conf {
@@ -20,7 +20,10 @@ fn window_config() -> Conf {
 async fn main() {
     // creating game objects
     let mut player = Pad::new(vec2(40., screen_height() / 2.5), PadType::Player);
-    let mut enemy = Pad::new(vec2(screen_width() - 10., screen_height() / 2.5), PadType::Enemy);
+    let mut enemy = Pad::new(
+        vec2(screen_width() - 10., screen_height() / 2.5),
+        PadType::Enemy,
+    );
     let mut ball = Ball::new(vec2(screen_width() / 2., screen_height() / 2.));
 
     // main loop
@@ -33,7 +36,14 @@ async fn main() {
         ball.update();
 
         // drawing game objects
-        draw_line(screen_width() / 2., 0., screen_width() / 2., screen_height(), 3., WHITE);
+        draw_line(
+            screen_width() / 2.,
+            0.,
+            screen_width() / 2.,
+            screen_height(),
+            3.,
+            WHITE,
+        );
 
         player.draw();
         enemy.draw();
