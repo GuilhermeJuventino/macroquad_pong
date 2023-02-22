@@ -130,67 +130,50 @@ impl Ball {
         }
 
         for pad in self.pad_list.iter() {
-            /*if self.detect_collision("horizontal", pad) {
-                self.speed.x *= -1.;
-            }
-
-            if self.detect_collision("vertical", pad) {
-                self.speed.y *= -1.;
-            }*/
-
-            if self.detect_collision("horizontal", pad) {
+            if self.detect_collision(pad) {
                 println!("True");
             }
         }
     }
 
-    pub fn detect_collision(&self, aim: &str, pad: &Rect) -> bool {
+    pub fn detect_collision(&self, pad: &Rect) -> bool {
         let collision: bool;
 
+        // temporary coordinate variables
         let mut test_x = self.circle.x;
         let mut test_y = self.circle.y;
 
+        // temporary distance variables
         let dist_x: f32;
         let dist_y: f32;
 
+        // checking against the left/right edges of the rectangle
         if self.circle.x < pad.x {
             test_x = pad.x;
         } else if self.circle.x > pad.x + pad.w {
             test_x = pad.x + pad.w;
         }
 
+        // checking against the top/bottom edges of the rectangle
         if self.circle.y < pad.y {
             test_y = pad.y;
         } else if self.circle.y > pad.y + pad.h {
             test_y = pad.y + pad.h;
         }
 
+        // calculating the x/y distances
         dist_x = self.circle.x - test_x;
         dist_y = self.circle.y - test_y;
 
+        // calculating the final distance variable
         let distance = ((dist_x * dist_x) + (dist_y * dist_y)).sqrt();
 
+        // check if the distance is less or equal to the radius of the ball, if so, collision is set to TRUE
         if distance <= self.circle.r {
             collision = true;
         } else {
             collision = false;
         }
-
-            /*if aim == "horizontal" {
-                if self.circle.x < pad.x ||
-                self.circle.x > pad.x + pad.w {
-                    collision = true;
-                } else {
-                    collision = false;
-                }
-            }
-
-            if aim == "vertical" {
-                if self.circle.y < pad.y ||
-                self.circle.y > pad.y + pad.h {
-                    collision = true;
-                }
-            }*/
 
         collision
     }
