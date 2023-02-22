@@ -1,5 +1,7 @@
 use macroquad::prelude::*;
 
+use crate::constants::*;
+
 pub enum PadType {
     Player,
     Enemy,
@@ -16,8 +18,8 @@ pub struct Pad {
 impl Pad {
     // function that creates a new pad object
     pub fn new(pos: Vec2, pad_type: PadType) -> Self {
-        let w = 30.;
-        let h = 100.;
+        let w = PAD_SIZE.0;
+        let h = PAD_SIZE.1;
 
         Pad {
             rect: Rect {
@@ -68,6 +70,7 @@ impl Pad {
 pub struct Ball {
     circle: Circle,
     color: Color,
+    speed: Vec2,
 }
 
 impl Ball {
@@ -76,9 +79,10 @@ impl Ball {
             circle: Circle {
                 x: pos.x,
                 y: pos.y,
-                r: 10.,
+                r: BALL_RADIUS,
             },
             color: LIGHTGRAY,
+            speed: vec2(BALL_SPEED, BALL_SPEED)
         }
     }
 
@@ -87,5 +91,21 @@ impl Ball {
     }
 
     pub fn update(&mut self, p_rect: &Rect, e_rect: &Rect) {
+        self.circle.x += self.speed.x;
+        self.circle.y += self.speed.y;
+
+        if self.circle.x < 0. {
+            self.speed.x *= -1.;
+        } else if self.circle.x > screen_width() {
+            self.speed.x *= -1.;
+        }
+
+        if self.circle.y < 0. {
+            self.circle.y = 0.;
+            self.speed.y *= -1.;
+        } else if self.circle.y > screen_height() {
+            self.circle.y = screen_height();
+            self.speed.y *= -1.;
+        }
     }
 }

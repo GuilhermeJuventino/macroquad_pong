@@ -1,11 +1,22 @@
 use macroquad::prelude::*;
 
 use objects::{Pad, PadType, Ball};
+use constants::*;
 
 mod objects;
+mod constants;
 
+// game configuration
+fn window_config() -> Conf {
+    Conf {
+        window_title: "Macroquad Pong".to_owned(),
+        window_width: SCREEN_WIDTH,
+        window_height: SCREEN_HEIGHT,
+        ..Default::default()
+    }
+}
 
-#[macroquad::main("Macroquad Pong")]
+#[macroquad::main(window_config)]
 async fn main() {
     // creating game objects
     let mut player = Pad::new(vec2(40., screen_height() / 2.5), PadType::Player);
