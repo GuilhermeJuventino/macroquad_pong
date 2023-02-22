@@ -94,18 +94,12 @@ impl Ball {
         self.circle.x += self.speed.x;
         self.circle.y += self.speed.y;
 
-        if self.circle.x < 0. {
+        if self.circle.x < 0. || self.circle.x > screen_width() {
             self.speed.x *= -1.;
-        } else if self.circle.x > screen_width() {
-            self.speed.x *= -1.;
-        }
+        } 
 
-        if self.circle.y < 0. {
-            self.circle.y = 0.;
+        if self.circle.y < 0. || self.circle.y > screen_height() {
             self.speed.y *= -1.;
-        } else if self.circle.y > screen_height() {
-            self.circle.y = screen_height();
-            self.speed.y *= -1.;
-        }
+        }     
     }
 }
