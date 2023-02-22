@@ -76,10 +76,13 @@ pub struct Ball {
     circle: Circle,
     color: Color,
     speed: Vec2,
+
+    // vector with the position of player and enemy pads
+    pad_list: Vec<Rect>,
 }
 
 impl Ball {
-    pub fn new(pos: Vec2) -> Self {
+    pub fn new(pos: Vec2, pad_list: Vec<Rect>) -> Self {
         // randomizing ball's initial velocity
         let mut rng = thread_rng();
         let mut x = rng.gen_range(-BALL_SPEED..BALL_SPEED);
@@ -106,6 +109,7 @@ impl Ball {
             },
             color: LIGHTGRAY,
             speed: vec2(x, y),
+            pad_list: pad_list
         }
     }
 
@@ -124,5 +128,37 @@ impl Ball {
         if self.circle.y < 0. || self.circle.y > screen_height() {
             self.speed.y *= -1.;
         }
+
+        for pad in self.pad_list.iter() {
+            if self.detect_collision("horizontal", pad) {
+                self.speed.x *= -1.;
+            }
+
+            if self.detect_collision("vertical", pad) {
+                self.speed.y *= -1.;
+            }
+        }
+    }
+
+    pub fn detect_collision(&self, aim: &str, pad: &Rect) -> bool {
+        let mut collision = false;
+
+            if aim == "horizontal" {
+                if self.circle.x < pad.x ||
+                self.circle.x > pad.x + pad.w {
+                    collision = true;
+                } else {
+                    collision = false;
+                }
+            }
+
+            if aim == "vertical" {
+                if self.circle.y < pad.y ||
+                self.circle.y > pad.y + pad.h {
+                    collision = true;
+                }
+            }
+
+        collision
     }
 }

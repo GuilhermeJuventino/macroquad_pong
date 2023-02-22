@@ -18,13 +18,19 @@ fn window_config() -> Conf {
 
 #[macroquad::main(window_config)]
 async fn main() {
+    let mut pad_list = vec![];
+
     // creating game objects
     let mut player = Pad::new(vec2(40., screen_height() / 2.5), PadType::Player);
+    pad_list.push(player.rect);
+
     let mut enemy = Pad::new(
         vec2(screen_width() - 10., screen_height() / 2.5),
         PadType::Enemy,
     );
-    let mut ball = Ball::new(vec2(screen_width() / 2., screen_height() / 2.));
+    pad_list.push(enemy.rect);
+
+    let mut ball = Ball::new(vec2(screen_width() / 2., screen_height() / 2.), pad_list);
 
     // main loop
     loop {
