@@ -78,11 +78,11 @@ pub struct Ball {
     speed: Vec2,
 
     // vector with the position of player and enemy pads
-    pad_list: Vec<Rect>,
+    //pad_list: Vec<Rect>,
 }
 
 impl Ball {
-    pub fn new(pos: Vec2, pad_list: Vec<Rect>) -> Self {
+    pub fn new(pos: Vec2) -> Self {
         // randomizing ball's initial velocity
         let mut rng = thread_rng();
         let mut x = rng.gen_range(-BALL_SPEED..BALL_SPEED);
@@ -109,7 +109,7 @@ impl Ball {
             },
             color: LIGHTGRAY,
             speed: vec2(x, y),
-            pad_list: pad_list
+            //pad_list: pad_list
         }
     }
 
@@ -117,7 +117,7 @@ impl Ball {
         draw_circle(self.circle.x, self.circle.y, self.circle.r, self.color);
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, pad_list: Vec<Rect>) {
         self.circle.x += self.speed.x;
         self.circle.y += self.speed.y;
 
@@ -129,7 +129,7 @@ impl Ball {
             self.speed.y *= -1.;
         }
 
-        for pad in self.pad_list.iter() {
+        for pad in pad_list.iter() {
             let new_vec = self.resolve_collision(pad);
 
             self.speed.x = new_vec.x;
@@ -142,15 +142,15 @@ impl Ball {
         let mut dy = self.speed.y;
 
         if self.circle.overlaps_rect(pad) {
-            if self.circle.x + self.circle.r <= pad.x ||
-            self.circle.x >= pad.x + pad.w {
+            if self.circle.x + self.circle.r >= pad.x ||
+            self.circle.x <= pad.x + pad.w {
                 dx *= -1.;
             }
 
-            if self.circle.y + self.circle.r >= pad.y ||
+            /*if self.circle.y + self.circle.r >= pad.y ||
             self.circle.y <= pad.y + pad.h {
                 dy *= -1.;
-            }
+            }*/
         }
 
         let new_vec = vec2(dx, dy);
