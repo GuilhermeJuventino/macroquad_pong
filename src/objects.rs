@@ -142,19 +142,40 @@ impl Ball {
         let mut dy = self.speed.y;
 
         if self.circle.overlaps_rect(pad) {
-            if self.circle.x + self.circle.r >= pad.x ||
-            self.circle.x <= pad.x + pad.w {
-                dx *= -1.;
-            }
+            if self.speed.x < 0. {
+                if self.circle.y >= pad.y && self.circle.y <= pad.y + pad.h {
+                    if self.circle.x - self.circle.r <= pad.x + pad.w {
+                        dx *= -1.;
 
-            /*if self.circle.y + self.circle.r >= pad.y ||
-            self.circle.y <= pad.y + pad.h {
-                dy *= -1.;
-            }*/
+                        let middle_y = pad.y + pad.h / 2.;
+                        let displacement = middle_y - self.circle.y;
+                        let reduction_factor = (pad.h / 2.) / BALL_SPEED;
+
+                        dy = (displacement / reduction_factor) * -1.;
+                    }
+                }
+
+            } else if self.speed.x > 0. {
+                if self.circle.y >= pad.y && self.circle.y <= pad.y + pad.h {
+                    if self.circle.x + self.circle.r >= pad.x {
+                        dx *= -1.;
+
+                        let middle_y = pad.y + pad.h / 2.;
+                        let displacement = middle_y - self.circle.y;
+                        let reduction_factor = (pad.h / 2.) / BALL_SPEED;
+
+                        dy = (displacement / reduction_factor) * -1.;
+                    }
+                }
+            }
         }
 
         let new_vec = vec2(dx, dy);
 
         new_vec
+    }
+
+    fn reset_position(&mut self) {
+
     }
 }
