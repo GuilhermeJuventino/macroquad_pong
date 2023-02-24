@@ -43,21 +43,26 @@ impl Pad {
         // check if the pad belongs to the player or the enemy
         match self.pad_type {
             PadType::Player => {
-                // player controls
-                let move_y = match (is_key_down(KeyCode::Up), is_key_down(KeyCode::Down)) {
-                    (true, false) => -5.,
-                    (false, true) => 5.,
-                    _ => 0.,
-                };
+                match state {
+                    BallState::Active => {
+                        // player controls
+                        let move_y = match (is_key_down(KeyCode::Up), is_key_down(KeyCode::Down)) {
+                            (true, false) => -5.,
+                            (false, true) => 5.,
+                            _ => 0.,
+                        };
 
-                // updating player position
-                self.rect.y += move_y;
+                        // updating player position
+                        self.rect.y += move_y;
 
-                // preventing player pad from leaving the screen
-                if self.rect.y < 0. {
-                    self.rect.y = 0.;
-                } else if self.rect.y > screen_height() - self.rect.h {
-                    self.rect.y = screen_height() - self.rect.h;
+                        // preventing player pad from leaving the screen
+                        if self.rect.y < 0. {
+                            self.rect.y = 0.;
+                        } else if self.rect.y > screen_height() - self.rect.h {
+                            self.rect.y = screen_height() - self.rect.h;
+                        }
+                    },
+                    _ => ()
                 }
             }
             PadType::Enemy => {
@@ -76,16 +81,6 @@ impl Pad {
                     },
                     _ => ()
                 }
-                /*let move_y = self.follow_ball(ball);
-
-                self.rect.y += move_y;
-
-                // preventing player pad from leaving the screen
-                if self.rect.y < 0. {
-                    self.rect.y = 0.;
-                } else if self.rect.y > screen_height() - self.rect.h {
-                    self.rect.y = screen_height() - self.rect.h;
-                }*/
             }
         }
     }
