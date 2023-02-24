@@ -130,51 +130,31 @@ impl Ball {
         }
 
         for pad in self.pad_list.iter() {
-            if self.detect_collision(pad) {
-                println!("True");
-            }
+            let new_vec = self.resolve_collision(pad);
+
+            self.speed.x = new_vec.x;
+            self.speed.y = new_vec.y;
         }
     }
 
-    pub fn detect_collision(&self, pad: &Rect) -> bool {
-        let collision: bool;
+    fn resolve_collision(&self, pad: &Rect) -> Vec2{
+        let mut dx = self.speed.x;
+        let mut dy = self.speed.y;
 
-        // temporary coordinate variables
-        let mut test_x = self.circle.x;
-        let mut test_y = self.circle.y;
+        if self.circle.overlaps_rect(pad) {
+            if self.circle.x + self.circle.r <= pad.x ||
+            self.circle.x >= pad.x + pad.w {
+                dx *= -1.;
+            }
 
-        // temporary distance variables
-        let dist_x: f32;
-        let dist_y: f32;
-
-        // checking against the left/right edges of the rectangle
-        if self.circle.x < pad.x {
-            test_x = pad.x;
-        } else if self.circle.x > pad.x + pad.w {
-            test_x = pad.x + pad.w;
+            if self.circle.y + self.circle.r >= pad.y ||
+            self.circle.y <= pad.y + pad.h {
+                dy *= -1.;
+            }
         }
 
-        // checking against the top/bottom edges of the rectangle
-        if self.circle.y < pad.y {
-            test_y = pad.y;
-        } else if self.circle.y > pad.y + pad.h {
-            test_y = pad.y + pad.h;
-        }
+        let new_vec = vec2(dx, dy);
 
-        // calculating the x/y distances
-        dist_x = self.circle.x - test_x;
-        dist_y = self.circle.y - test_y;
-
-        // calculating the final distance variable
-        let distance = ((dist_x * dist_x) + (dist_y * dist_y)).sqrt();
-
-        // check if the distance is less or equal to the radius of the ball, if so, collision is set to TRUE
-        if distance <= self.circle.r {
-            collision = true;
-        } else {
-            collision = false;
-        }
-
-        collision
+        new_vec
     }
 }
