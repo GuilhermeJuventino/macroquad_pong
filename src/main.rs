@@ -31,7 +31,7 @@ async fn main() {
     // main loop
     loop {
         clear_background(BLACK);
-        
+
         // a list with a copy of both pad's rectangles.
         let mut pad_list = vec![];
 

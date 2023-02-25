@@ -10,7 +10,7 @@ pub enum PadType {
 
 pub enum BallState {
     Active,
-    Inactive
+    Inactive,
 }
 
 // pad object
@@ -61,8 +61,8 @@ impl Pad {
                         } else if self.rect.y > screen_height() - self.rect.h {
                             self.rect.y = screen_height() - self.rect.h;
                         }
-                    },
-                    _ => ()
+                    }
+                    _ => (),
                 }
             }
             PadType::Enemy => {
@@ -78,8 +78,8 @@ impl Pad {
                         } else if self.rect.y > screen_height() - self.rect.h {
                             self.rect.y = screen_height() - self.rect.h;
                         }
-                    },
-                    _ => ()
+                    }
+                    _ => (),
                 }
             }
         }
@@ -100,7 +100,7 @@ impl Pad {
     pub fn follow_ball(&mut self, ball: &Circle) -> f32 {
         let mut move_y: f32 = 0.;
 
-        if self.rect.top() < ball.y{
+        if self.rect.top() < ball.y {
             move_y = 4.;
         }
 
@@ -117,7 +117,7 @@ pub struct Ball {
     pub circle: Circle,
     color: Color,
     speed: Vec2,
-    pub state: BallState
+    pub state: BallState,
 }
 
 impl Ball {
@@ -149,7 +149,7 @@ impl Ball {
             },
             color: LIGHTGRAY,
             speed: vec2(x, y),
-            state: BallState::Inactive
+            state: BallState::Inactive,
         }
     }
 
@@ -166,7 +166,7 @@ impl Ball {
 
                 // reseting the ball's position after it leaves the screen from either the left or right side
                 if self.circle.x < 0. || self.circle.x > screen_width() {
-                    self.speed.x *= -1.;
+                    self.reset_position();
                 }
 
                 // preventing the ball from going above or below the screen
@@ -182,7 +182,7 @@ impl Ball {
                     self.speed.x = new_vec.x;
                     self.speed.y = new_vec.y;
                 }
-            },
+            }
             BallState::Inactive => {
                 if is_key_pressed(KeyCode::Enter) || is_key_pressed(KeyCode::Space) {
                     self.activate_ball();
@@ -191,6 +191,7 @@ impl Ball {
         }
     }
 
+    // function that resolves ball vs pad collisions
     fn resolve_collision(&self, pad: &Rect) -> Vec2 {
         // temporary x/y values
         let mut dx = self.speed.x;
@@ -215,7 +216,7 @@ impl Ball {
                         dy = (displacement / reduction_factor) * -1.;
                     }
                 }
-            
+
             // checks if the ball speed is greater than 0.
             } else if self.speed.x > 0. {
                 // checks where the ball hit the pad
@@ -223,7 +224,7 @@ impl Ball {
                     if self.circle.x + self.circle.r >= pad.x {
                         // updates temporary x velocity
                         dx *= -1.;
-                        
+
                         // calculating the new temporary y velocity
                         let middle_y = pad.y + pad.h / 2.;
                         let displacement = middle_y - self.circle.y;
@@ -242,11 +243,14 @@ impl Ball {
         new_vec
     }
 
+    // function that resets the ball's position and state
     fn reset_position(&mut self) {
+        // reseting ball's position and state
         self.state = BallState::Inactive;
         self.circle.x = screen_width() / 2.;
         self.circle.y = screen_height() / 2.;
 
+        // reseting ball's initial velocity
         let mut rng = thread_rng();
 
         let mut x = rng.gen_range(-BALL_SPEED..BALL_SPEED);
@@ -268,6 +272,7 @@ impl Ball {
         self.speed.y = y;
     }
 
+    // function that changes the ball state from inactive to active
     fn activate_ball(&mut self) {
         self.state = BallState::Active;
     }
