@@ -2,6 +2,8 @@
 pub const SCREEN_WIDTH: i32 = 1200;
 pub const SCREEN_HEIGHT: i32 = 650;
 
+pub const FONT: &str = "src/assets/font/ChargeVector-PKldB.ttf";
+
 // pad settings
 pub const PAD_SIZE: (f32, f32) = (30., 100.);
 

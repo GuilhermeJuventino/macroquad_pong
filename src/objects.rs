@@ -184,7 +184,7 @@ impl Ball {
                 }
             }
             BallState::Inactive => {
-                if is_key_pressed(KeyCode::Enter) || is_key_pressed(KeyCode::Space) {
+                if is_key_pressed(KeyCode::Space) {
                     self.activate_ball();
                 }
             }
