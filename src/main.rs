@@ -1,10 +1,19 @@
 use macroquad::prelude::*;
 
 use constants::*;
-use objects::{Ball, Pad, PadType};
+use objects::{Ball, Pad, PadType, Score};
+use utils::display_text;
 
 mod constants;
 mod objects;
+mod utils;
+
+// enum for managing game states
+enum GameState {
+    TitleScreen,
+    InGame,
+    GameOver,
+}
 
 // game configuration
 fn window_config() -> Conf {
@@ -34,6 +43,8 @@ async fn main() {
 
     let mut ball = Ball::new(vec2(screen_width() / 2., screen_height() / 2.));
 
+    let mut score = Score::new();
+
     // main loop
     loop {
         clear_background(BLACK);
@@ -59,7 +70,7 @@ async fn main() {
             enemy.update(&ball.circle, &ball.state);
             pad_list.push(enemy.rect);
 
-            ball.update(pad_list);
+            ball.update(pad_list, &mut score);
         }
 
         // drawing game objects
@@ -72,6 +83,11 @@ async fn main() {
             WHITE,
         );
 
+        // drawing the score if the game is not paused
+        if !paused {
+            score.display_score(&font);
+        }
+
         player.draw();
         enemy.draw();
         ball.draw();
@@ -81,22 +97,12 @@ async fn main() {
             // drawing paused text to the center of the screen
             let paused_text: &str = "Pause";
 
-            let paused_text_params = TextParams {
-                font: font,
-                font_size: 40,
-                font_scale: 1.,
-                color: RED,
-                ..Default::default()
-            };
-
-            let paused_text_dim = measure_text(paused_text, Some(font), 40, 1.);
-
-            draw_text_ex(
+            display_text(
                 paused_text,
-                screen_width() / 2. - paused_text_dim.width / 2.,
-                screen_height() / 2. + paused_text_dim.height / 2.,
-                paused_text_params,
-            );
+                screen_width() / 2.,
+                screen_height() / 2.,
+                &font,
+            )
         }
 
         next_frame().await;

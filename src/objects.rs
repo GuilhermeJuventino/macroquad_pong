@@ -2,6 +2,7 @@ use ::rand::prelude::*;
 use macroquad::prelude::*;
 
 use crate::constants::*;
+use crate::utils::display_text;
 
 pub enum PadType {
     Player,
@@ -110,6 +111,11 @@ impl Pad {
 
         move_y
     }
+
+    // function that reset the pad's position
+    pub fn reset_position(&mut self) {
+        self.rect.y = screen_height() / 2.5;
+    }
 }
 
 // ball object
@@ -157,7 +163,7 @@ impl Ball {
         draw_circle(self.circle.x, self.circle.y, self.circle.r, self.color);
     }
 
-    pub fn update(&mut self, pad_list: Vec<Rect>) {
+    pub fn update(&mut self, pad_list: Vec<Rect>, score: &mut Score) {
         match self.state {
             BallState::Active => {
                 // updates the ball's position
@@ -165,7 +171,15 @@ impl Ball {
                 self.circle.y += self.speed.y;
 
                 // reseting the ball's position after it leaves the screen from either the left or right side
-                if self.circle.x < 0. || self.circle.x > screen_width() {
+                /*if self.circle.x < 0. || self.circle.x > screen_width() {
+                    self.reset_position();
+                }*/
+
+                if self.circle.x < 0. {
+                    score.enemy += 1;
+                    self.reset_position()
+                } else if self.circle.x > screen_width() {
+                    score.player += 1;
                     self.reset_position();
                 }
 
@@ -244,7 +258,7 @@ impl Ball {
     }
 
     // function that resets the ball's position and state
-    fn reset_position(&mut self) {
+    pub fn reset_position(&mut self) {
         // reseting ball's position and state
         self.state = BallState::Inactive;
         self.circle.x = screen_width() / 2.;
@@ -275,5 +289,44 @@ impl Ball {
     // function that changes the ball state from inactive to active
     fn activate_ball(&mut self) {
         self.state = BallState::Active;
+    }
+}
+
+// a struct that contains the game score
+pub struct Score {
+    player: u32,
+    enemy: u32,
+}
+
+impl Score {
+    pub fn new() -> Self {
+        Score {
+            player: 0,
+            enemy: 0,
+        }
+    }
+
+    pub fn reset_score(&mut self) {
+        self.player = 0;
+        self.enemy = 0;
+    }
+
+    pub fn display_score(&self, font: &Font) {
+        let player_score_text = format!("{}", self.player);
+        let enemy_score_text = format!("{}", self.enemy);
+
+        display_text(
+            player_score_text.as_str(),
+            (screen_width() / 2.) - 40.,
+            screen_height() / 2.,
+            font,
+        );
+
+        display_text(
+            enemy_score_text.as_str(),
+            (screen_width() / 2.) + 40.,
+            screen_height() / 2.,
+            font,
+        );
     }
 }
