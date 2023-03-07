@@ -15,6 +15,13 @@ enum GameState {
     GameOver,
 }
 
+// enum for deciding who won the game
+enum Winner {
+    Player,
+    Enemy,
+    None,
+}
+
 // game configuration
 fn window_config() -> Conf {
     Conf {
@@ -29,6 +36,8 @@ fn window_config() -> Conf {
 async fn main() {
     // variable for controlling the game state
     let mut game_state = GameState::TitleScreen;
+
+    let mut winner = Winner::None;
 
     // loading the game font
     let font = load_ttf_font(FONT).await.expect("Failed to load font");
@@ -59,7 +68,7 @@ async fn main() {
                     // change the state to in game
                     game_state = GameState::InGame;
                 }
-            },
+            }
 
             GameState::InGame => {
                 // pauses the game whenever the player presses enter
@@ -71,11 +80,19 @@ async fn main() {
                     }
                 }
 
-                if is_key_pressed(KeyCode::S) {
+                // deciding who won the game
+                if score.player == 10 {
+                    winner = Winner::Player;
+                } else if score.enemy == 10 {
+                    winner = Winner::Enemy;
+                }
+
+                // changing the state after either the player or the enemy won the game
+                if score.player == 10 || score.enemy == 10 {
                     // reseting the game
                     reset_game(&mut player, &mut enemy, &mut ball, &mut score);
                     paused = false;
-                    
+
                     // change the state to game over
                     game_state = GameState::GameOver
                 }
@@ -94,12 +111,11 @@ async fn main() {
 
                     ball.update(pad_list, &mut score);
                 }
-            },
+            }
 
             GameState::GameOver => {
                 if is_key_pressed(KeyCode::Enter) {
                     // change the state to in game
-
                     game_state = GameState::InGame;
                 }
             }
@@ -118,7 +134,7 @@ async fn main() {
                     screen_height() / 2. - 20.,
                     &font,
                     40,
-                    WHITE
+                    WHITE,
                 );
 
                 display_text(
@@ -127,9 +143,9 @@ async fn main() {
                     screen_height() / 2. + 40.,
                     &font,
                     20,
-                    WHITE
+                    WHITE,
                 );
-            },
+            }
 
             GameState::InGame => {
                 // drawing game objects
@@ -162,22 +178,37 @@ async fn main() {
                         screen_height() / 2.,
                         &font,
                         40,
-                        RED
+                        RED,
                     )
                 }
-            },
+            }
 
             GameState::GameOver => {
-                // displaying game over text
-                let game_over_text = "Game Over: Press Enter to play again";
+                let game_over_text = match winner {
+                    Winner::Player => "You Win!",
+                    Winner::Enemy => "You Lose!",
+                    _ => "",
+                };
 
+                let instruction_text = "Press Enter to play again";
+
+                // displaying game over text
                 display_text(
                     game_over_text,
                     screen_width() / 2.,
-                    screen_height() / 2.,
+                    screen_height() / 2. - 20.,
                     &font,
                     40,
-                    WHITE
+                    WHITE,
+                );
+
+                display_text(
+                    instruction_text,
+                    screen_width() / 2.,
+                    screen_height() / 2. + 40.,
+                    &font,
+                    20,
+                    WHITE,
                 );
             }
         }

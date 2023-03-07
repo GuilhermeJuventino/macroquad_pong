@@ -294,8 +294,8 @@ impl Ball {
 
 // a struct that contains the game score
 pub struct Score {
-    player: u32,
-    enemy: u32,
+    pub player: u32,
+    pub enemy: u32,
 }
 
 impl Score {
@@ -321,7 +321,7 @@ impl Score {
             screen_height() / 2.,
             font,
             40,
-            RED
+            RED,
         );
 
         display_text(
@@ -330,7 +330,7 @@ impl Score {
             screen_height() / 2.,
             font,
             40,
-            RED
+            RED,
         );
     }
 }
