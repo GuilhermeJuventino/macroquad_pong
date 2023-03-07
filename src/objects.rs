@@ -320,6 +320,8 @@ impl Score {
             (screen_width() / 2.) - 40.,
             screen_height() / 2.,
             font,
+            40,
+            RED
         );
 
         display_text(
@@ -327,6 +329,8 @@ impl Score {
             (screen_width() / 2.) + 40.,
             screen_height() / 2.,
             font,
+            40,
+            RED
         );
     }
 }

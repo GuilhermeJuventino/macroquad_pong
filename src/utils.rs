@@ -3,16 +3,16 @@ use macroquad::prelude::*;
 use crate::objects::*;
 
 // function for displaying text to the screen
-pub fn display_text(text: &str, x: f32, y: f32, font: &Font) {
+pub fn display_text(text: &str, x: f32, y: f32, font: &Font, font_size: u16, color: Color) {
     let text_params = TextParams {
         font: *font,
-        font_size: 40,
+        font_size: font_size,
         font_scale: 1.,
-        color: RED,
+        color: color,
         ..Default::default()
     };
 
-    let text_dim = measure_text(text, Some(*font), 40, 1.);
+    let text_dim = measure_text(text, Some(*font), font_size, 1.);
 
     draw_text_ex(
         text,
